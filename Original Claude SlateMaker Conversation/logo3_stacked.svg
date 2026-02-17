@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350" width="800" height="350">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap');
+    </style>
+  </defs>
+  
+  <!-- Dark background -->
+  <rect width="800" height="350" fill="#2A2A2A" rx="8"/>
+  
+  <!-- Central wrench icon integrated into design -->
+  <!-- Wrench shape -->
+  <g transform="translate(400, 100)" opacity="0.15">
+    <!-- Wrench handle -->
+    <rect x="-4" y="-40" width="8" height="80" fill="#E8A020" rx="2"/>
+    <!-- Wrench head top -->
+    <path d="M-15,-40 L-15,-55 Q-15,-65 -8,-65 L8,-65 Q15,-65 15,-55 L15,-40 L8,-40 L8,-50 Q8,-55 4,-55 L-4,-55 Q-8,-55 -8,-50 L-8,-40 Z" fill="#E8A020"/>
+    <!-- Wrench head bottom -->
+    <path d="M-15,40 L-15,55 Q-15,65 -8,65 L8,65 Q15,65 15,55 L15,40 L8,40 L8,50 Q8,55 4,55 L-4,55 Q-8,55 -8,50 L-8,40 Z" fill="#E8A020"/>
+  </g>
+  
+  <!-- Hex bolt icon -->
+  <g transform="translate(400, 100)" opacity="0.1">
+    <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="none" stroke="#E8A020" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#E8A020" stroke-width="2"/>
+  </g>
+  
+  <!-- Main wordmark -->
+  <text x="400" y="190" font-family="'Bebas Neue', Impact, sans-serif" font-size="100" font-weight="bold" text-anchor="middle" letter-spacing="8" fill="#C8C8C8">SLATE</text>
+  
+  <!-- MAKER in amber/gold -->
+  <text x="400" y="260" font-family="'Bebas Neue', Impact, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" letter-spacing="20" fill="#E8A020">MAKER</text>
+  
+  <!-- Horizontal rules -->
+  <line x1="160" y1="200" x2="300" y2="200" stroke="#555555" stroke-width="1"/>
+  <line x1="500" y1="200" x2="640" y2="200" stroke="#555555" stroke-width="1"/>
+  
+  <!-- .ORG -->
+  <text x="400" y="305" font-family="'Bebas Neue', Impact, sans-serif" font-size="18" text-anchor="middle" letter-spacing="8" fill="#555555">.ORG</text>
+  
+  <!-- Corner accents - bolt/nut shapes -->
+  <polygon points="45,35 55,30 65,35 65,45 55,50 45,45" fill="none" stroke="#E8A020" stroke-width="1" opacity="0.3"/>
+  <polygon points="735,35 745,30 755,35 755,45 745,50 735,45" fill="none" stroke="#E8A020" stroke-width="1" opacity="0.3"/>
+  <polygon points="45,305 55,300 65,305 65,315 55,320 45,315" fill="none" stroke="#E8A020" stroke-width="1" opacity="0.3"/>
+  <polygon points="735,305 745,300 755,305 755,315 745,320 735,315" fill="none" stroke="#E8A020" stroke-width="1" opacity="0.3"/>
+</svg>

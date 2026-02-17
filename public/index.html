@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <meta name="description" content="SlateMaker — The open source maker community for the Slate EV pickup. 3D printed accessories, CNC projects, mods, and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>SlateMaker — Build · Modify · Share</title>
+
+    <!-- Suppress AbortErrors BEFORE React loads -->
+    <script>
+      (function() {
+        const isAbortError = (err) => {
+          return err && (
+            err.name === 'AbortError' ||
+            (err.message && err.message.includes('signal is aborted')) ||
+            (err.message && err.message.includes('aborted without reason')) ||
+            String(err).includes('AbortError')
+          );
+        };
+
+        // Capture errors at the earliest possible moment
+        window.addEventListener('error', function(event) {
+          if (isAbortError(event.error)) {
+            console.log('[Early suppression] AbortError caught in global handler');
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return false;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (isAbortError(event.reason)) {
+            console.log('[Early suppression] AbortError caught in promise rejection');
+            event.preventDefault();
+            event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

@@ -1,0 +1,125 @@
+.designs-toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.designs-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+.designs-search input {
+  flex: 1;
+  padding: 12px 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.designs-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.designs-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+.designs-sort select {
+  padding: 12px 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+.designs-categories {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.designs-category-btn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.designs-category-btn:hover {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+.designs-category-btn.active {
+  background: var(--accent-amber);
+  border-color: var(--accent-amber);
+  color: var(--bg-primary);
+}
+
+.designs-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.designs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.designs-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.designs-empty p {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .designs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .designs-toolbar {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .designs-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SlateMaker — Build · Modify · Share</title>
+  <meta name="description" content="The open source maker community for the Slate EV pickup. 3D printed accessories, CNC projects, mods, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #222222;
+      --bg-tertiary: #2a2a2a;
+      --bg-card: #2e2e2e;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --text-muted: #686868;
+      --accent-amber: #d4922a;
+      --accent-amber-hover: #e8a530;
+      --accent-amber-dim: rgba(212, 146, 42, 0.15);
+      --accent-red: #c0392b;
+      --accent-red-dim: rgba(192, 57, 43, 0.12);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-medium: rgba(255, 255, 255, 0.1);
+      --font-display: 'Bebas Neue', Impact, sans-serif;
+      --font-heading: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent-amber); text-decoration: none; transition: color 0.3s; }
+    a:hover { color: var(--accent-amber-hover); }
+
+    /* ===== NOISE TEXTURE OVERLAY ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(26, 26, 26, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.3s;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+    }
+
+    .nav-logo span { color: var(--accent-amber); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+    .nav-links a {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-amber);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Blueprint grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        linear-gradient(rgba(212, 146, 42, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 146, 42, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+
+    /* Radial glow */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(212, 146, 42, 0.06) 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 0 2rem;
+    }
+
+    .hero-logo {
+      max-width: 700px;
+      width: 90%;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .btn {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--accent-amber);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-amber-hover);
+      color: var(--bg-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 146, 42, 0.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-medium);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+      transform: translateY(-2px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: float 3s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .hero-scroll svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-muted);
+    }
+
+    /* ===== SECTION COMMON ===== */
+    section {
+      padding: 6rem 2rem;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent-amber);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--accent-amber);
+      margin-bottom: 2rem;
+    }
+
+    /* ===== ABOUT SECTION ===== */
+    .about {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      font-weight: 300;
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .about-text strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .about-image {
+      position: relative;
+    }
+
+    .about-image img {
+      width: 100%;
+      border: 1px solid var(--border-subtle);
+      display: block;
+    }
+
+    .about-image::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--accent-amber);
+      opacity: 0.2;
+      z-index: -1;
+    }
+
+    /* ===== WHAT WE DO SECTION ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent-amber);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-medium);
+      transform: translateY(-4px);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== TRUCK SHOWCASE ===== */
+    .showcase {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    .showcase-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .showcase-img-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .showcase-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s;
+    }
+
+    .showcase-img-wrap:hover img {
+      transform: scale(1.03);
+    }
+
+    .showcase-img-wrap .img-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    /* ===== COMMUNITY SECTION ===== */
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .community-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .community-card:hover {
+      border-color: var(--accent-amber);
+      transform: translateY(-3px);
+    }
+
+    .community-card .card-platform {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .community-card .card-handle {
+      font-size: 0.9rem;
+      color: var(--accent-amber);
+      font-weight: 500;
+    }
+
+    .community-card .card-desc {
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .community-card .card-arrow {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      transition: all 0.3s;
+      margin-top: auto;
+    }
+
+    .community-card:hover .card-arrow {
+      color: var(--accent-amber);
+      transform: translateX(4px);
+    }
+
+    /* ===== SIGNUP / CTA SECTION ===== */
+    .signup {
+      background: var(--bg-tertiary);
+      text-align: center;
+      border-top: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signup::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(212, 146, 42, 0.05) 0%, transparent 70%);
+    }
+
+    .signup .section-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .signup-text {
+      font-weight: 300;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 550px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+
+    .signup-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .signup-form input {
+      flex: 1;
+      padding: 14px 20px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 300;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-medium);
+      border-right: none;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .signup-form input::placeholder { color: var(--text-muted); }
+    .signup-form input:focus { border-color: var(--accent-amber); }
+
+    .signup-form .btn {
+      white-space: nowrap;
+    }
+
+    .signup-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+    }
+
+    .footer-brand span { color: var(--accent-amber); opacity: 0.6; }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover { color: var(--accent-amber); }
+
+    .footer-copy {
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .showcase-images { grid-template-columns: 1fr; }
+      .section-title { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 700px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 26, 0.97);
+        padding: 1.5rem 2rem;
+        gap: 1.25rem;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .hero-logo { max-width: 90%; }
+      .hero-tagline { font-size: 1.05rem; }
+      .signup-form { flex-direction: column; }
+      .signup-form input { border-right: 1px solid var(--border-medium); }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">SLATE<span>MAKER</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#features">What We Do</a></li>
+        <li><a href="#showcase">The Slate</a></li>
+        <li><a href="#community">Community</a></li>
+        <li><a href="#signup">Join</a></li>
+      </ul>
+      <button class="nav-hamburger" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <img src="SlateMakerLogo.jpg" alt="SlateMaker — Build · Modify · Share" class="hero-logo">
+      <p class="hero-tagline">
+        The open source maker community for the Slate EV pickup truck. 
+        Design, fabricate, and share accessories, mods, and upgrades — together.
+      </p>
+      <div class="hero-cta">
+        <a href="#community" class="btn btn-primary">Join the Community</a>
+        <a href="#about" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <div class="section-label">About SlateMaker</div>
+          <h2 class="section-title">BY MAKERS,<br>FOR MAKERS</h2>
+          <div class="section-divider"></div>
+          <p>
+            SlateMaker started with a simple idea: the Slate EV pickup is built for people who 
+            love to <strong>build, modify, and make things their own</strong>. With its 
+            service-it-yourself philosophy and modular design, the Slate is practically begging 
+            for a community of makers to rally around it.
+          </p>
+          <p>
+            Based in Central Indiana — just a short drive from Slate's factory in 
+            Warsaw — we're building the go-to hub for open source designs, fabrication guides, 
+            and community knowledge. Whether you're 3D printing a custom phone mount or 
+            CNC-cutting a bed rack, this is your place.
+          </p>
+          <p>
+            We believe in <strong>open source by default</strong>, helping each other learn, 
+            and making the Slate ownership experience better for everyone.
+          </p>
+        </div>
+        <div class="about-image reveal">
+          <img src="slate-truck.png" alt="The Slate EV Pickup Truck">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE DO -->
+  <section class="features" id="features">
+    <div class="section-inner">
+      <div class="section-label reveal">What We Do</div>
+      <h2 class="section-title reveal">BUILD · MODIFY · SHARE</h2>
+      <div class="section-divider reveal"></div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#9881;</span>
+          <h3>3D Printing</h3>
+          <p>Download and share open source STL files for brackets, mounts, holders, covers, and accessories designed specifically for the Slate.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#9878;</span>
+          <h3>CNC & Fabrication</h3>
+          <p>From laser-cut interior panels to CNC-milled bed accessories and welded bumpers — share your designs and build processes with the community.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#9889;</span>
+          <h3>Electrical & Wiring</h3>
+          <p>Custom lighting, audio upgrades, wiring harnesses, and electrical mods. Document your work so others can learn and build on it.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#128295;</span>
+          <h3>Service & Repair</h3>
+          <p>Slate is built to be serviced by you or your local shop. Share repair guides, maintenance tips, and service documentation.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#128230;</span>
+          <h3>Design Repository</h3>
+          <p>A growing open source library of maker-created designs, files, and documentation — version controlled and community reviewed.</p>
+        </div>
+        <div class="feature-card reveal">
+          <span class="feature-icon">&#127891;</span>
+          <h3>Guides & Tutorials</h3>
+          <p>Step-by-step build guides, video walkthroughs, and tutorials for every skill level — from your first 3D print to advanced fabrication.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section class="showcase" id="showcase">
+    <div class="section-inner">
+      <div class="section-label reveal">The Platform</div>
+      <h2 class="section-title reveal">DESIGNED TO BE YOURS</h2>
+      <div class="section-divider reveal" style="margin-left:auto;margin-right:auto;"></div>
+      <p class="reveal" style="font-weight:300;font-size:1.05rem;color:var(--text-secondary);max-width:650px;margin:0 auto;line-height:1.8;">
+        The Slate EV pickup is built in Warsaw, Indiana with a radical idea: 
+        you should be able to modify, service, and truly own your vehicle. 
+        Its modular, bolt-on body panels and open service philosophy make it 
+        the perfect canvas for makers.
+      </p>
+      <div class="showcase-images reveal">
+        <div class="showcase-img-wrap">
+          <img src="slate-truck.png" alt="Slate EV Pickup — Blank Slate">
+          <div class="img-label">The Blank Slate</div>
+        </div>
+        <div class="showcase-img-wrap">
+          <img src="slate-deconstructed.png" alt="Slate EV Pickup — Deconstructed View">
+          <div class="img-label">Modular by Design</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="community" id="community">
+    <div class="section-inner">
+      <div class="section-label reveal">Find Us</div>
+      <h2 class="section-title reveal">JOIN THE COMMUNITY</h2>
+      <div class="section-divider reveal"></div>
+      <div class="community-grid">
+        <a href="https://discord.gg/hA6PFSgX" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">Discord</span>
+          <span class="card-handle">SlateMaker</span>
+          <span class="card-desc">Real-time chat, build discussions, design collaboration, and community support.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://youtube.com/@SlateMakerHQ" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">YouTube</span>
+          <span class="card-handle">@SlateMakerHQ</span>
+          <span class="card-desc">Build videos, design walkthroughs, install guides, and Slate news coverage.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://github.com/slatemakerorg" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">GitHub</span>
+          <span class="card-handle">slatemakerorg</span>
+          <span class="card-desc">Open source design files, STLs, documentation, and version-controlled projects.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://reddit.com/r/SlateMaker" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">Reddit</span>
+          <span class="card-handle">r/SlateMaker</span>
+          <span class="card-desc">Community discussion, build showcases, design requests, and Slate news.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://instagram.com/slatemakerorg" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">Instagram</span>
+          <span class="card-handle">@slatemakerorg</span>
+          <span class="card-desc">Build photos, project showcases, and behind-the-scenes maker content.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://x.com/SlateMakerOrg" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">X / Twitter</span>
+          <span class="card-handle">@SlateMakerOrg</span>
+          <span class="card-desc">Quick updates, Slate news, and community highlights.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://tiktok.com/@slatemaker" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">TikTok</span>
+          <span class="card-handle">@slatemaker</span>
+          <span class="card-desc">Short-form maker content, time-lapses, and quick build clips.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://www.printables.com/@SlateMaker_4408798" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">Printables</span>
+          <span class="card-handle">SlateMaker</span>
+          <span class="card-desc">3D printable designs and STL files for the Slate community.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+        <a href="https://www.thingiverse.com/slatemaker" class="community-card reveal" target="_blank" rel="noopener">
+          <span class="card-platform">Thingiverse</span>
+          <span class="card-handle">SlateMaker</span>
+          <span class="card-desc">Additional 3D printable designs hosted on the Thingiverse platform.</span>
+          <span class="card-arrow">&#8594;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNUP CTA -->
+  <section class="signup" id="signup">
+    <div class="section-inner">
+      <div class="section-label reveal">Stay Updated</div>
+      <h2 class="section-title reveal">GET IN EARLY</h2>
+      <div class="section-divider reveal" style="margin-left:auto;margin-right:auto;"></div>
+      <p class="signup-text reveal">
+        We're building something special. Sign up to get notified about new designs, 
+        community events, build guides, and the latest Slate maker news.
+      </p>
+      <div class="signup-form reveal">
+        <input type="email" placeholder="your@email.com" aria-label="Email address">
+        <button class="btn btn-primary" onclick="handleSignup()">Subscribe</button>
+      </div>
+      <p class="signup-note reveal">No spam, ever. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">SLATE<span>MAKER</span>.ORG</div>
+      <ul class="footer-links">
+        <li><a href="https://discord.gg/hA6PFSgX" target="_blank">Discord</a></li>
+        <li><a href="https://youtube.com/@SlateMakerHQ" target="_blank">YouTube</a></li>
+        <li><a href="https://github.com/slatemakerorg" target="_blank">GitHub</a></li>
+        <li><a href="https://reddit.com/r/SlateMaker" target="_blank">Reddit</a></li>
+        <li><a href="https://instagram.com/slatemakerorg" target="_blank">Instagram</a></li>
+        <li><a href="https://x.com/SlateMakerOrg" target="_blank">X</a></li>
+      </ul>
+      <div class="footer-copy">
+        &copy; 2026 SlateMaker.org — An open source community project. Not affiliated with Slate Auto.
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close mobile nav on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          // Stagger the animation slightly for elements in the same section
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Email signup placeholder
+    function handleSignup() {
+      const input = document.querySelector('.signup-form input');
+      const email = input.value.trim();
+      if (email && email.includes('@')) {
+        input.value = '';
+        input.placeholder = 'Thanks! We\'ll be in touch.';
+        input.style.borderColor = 'var(--accent-amber)';
+      }
+    }
+
+    // Allow Enter key for signup
+    document.querySelector('.signup-form input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleSignup();
+    });
+  </script>
+
+</body>
+</html>

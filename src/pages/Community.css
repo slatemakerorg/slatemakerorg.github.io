@@ -1,0 +1,53 @@
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.community-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.community-card:hover {
+  border-color: var(--accent-amber);
+}
+
+.community-card-platform {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.community-card-handle {
+  font-size: 0.9rem;
+  color: var(--accent-amber);
+  font-weight: 500;
+}
+
+.community-card-desc {
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.community-card-arrow {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.community-card:hover .community-card-arrow {
+  color: var(--accent-amber);
+  transform: translateX(4px);
+}

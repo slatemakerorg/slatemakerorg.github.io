@@ -1,0 +1,222 @@
+.design-detail {
+  padding: 2rem 0;
+}
+
+.design-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+
+.design-detail-back:hover {
+  color: var(--accent-primary);
+}
+
+.design-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Left column */
+.design-detail-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.design-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.design-detail-no-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.design-detail-files {
+  margin-top: 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.design-detail-files-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+}
+
+.design-detail-file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.design-detail-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.design-detail-file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  min-width: 0;
+}
+
+.design-detail-file-info > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.design-detail-file-name {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.design-detail-file-size {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Right column */
+.design-detail-header {
+  margin-bottom: 1.25rem;
+}
+
+.design-detail-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0.5rem 0 0 0;
+  line-height: 1.2;
+}
+
+.design-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.design-detail-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.design-detail-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.design-detail-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.design-detail-like-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.design-detail-like-btn:hover {
+  border-color: #e05a5a;
+  color: #e05a5a;
+}
+
+.design-detail-like-btn.liked {
+  background: rgba(224, 90, 90, 0.1);
+  border-color: #e05a5a;
+  color: #e05a5a;
+}
+
+.design-detail-description {
+  margin-bottom: 1.5rem;
+}
+
+.design-detail-description h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem 0;
+}
+
+.design-detail-description p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.design-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .design-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .design-detail-title {
+    font-size: 1.5rem;
+  }
+}

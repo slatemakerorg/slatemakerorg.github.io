@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap');
+    </style>
+    <clipPath id="textClip1">
+      <text x="400" y="185" font-family="'Bebas Neue', Impact, sans-serif" font-size="140" font-weight="bold" text-anchor="middle" letter-spacing="12">SLATEMAKER</text>
+    </clipPath>
+  </defs>
+  
+  <!-- Dark background -->
+  <rect width="800" height="300" fill="#2A2A2A" rx="8"/>
+  
+  <!-- Main text -->
+  <text x="400" y="185" font-family="'Bebas Neue', Impact, sans-serif" font-size="140" font-weight="bold" text-anchor="middle" letter-spacing="12" fill="#C0C0C0">SLATEMAKER</text>
+  
+  <!-- Accent line separating SLATE from MAKER -->
+  <line x1="430" y1="75" x2="430" y2="210" stroke="#E8A020" stroke-width="3" opacity="0.8"/>
+  
+  <!-- Subtle tagline -->
+  <text x="400" y="240" font-family="'Bebas Neue', Impact, sans-serif" font-size="22" text-anchor="middle" letter-spacing="8" fill="#808080">BUILD · MODIFY · SHARE</text>
+  
+  <!-- Small wrench/gear accent marks -->
+  <!-- Gear tooth left -->
+  <rect x="80" y="130" width="8" height="8" fill="#E8A020" opacity="0.6" transform="rotate(45 84 134)"/>
+  <rect x="60" y="150" width="8" height="8" fill="#E8A020" opacity="0.4" transform="rotate(45 64 154)"/>
+  <rect x="85" y="160" width="6" height="6" fill="#E8A020" opacity="0.3" transform="rotate(45 88 163)"/>
+  
+  <!-- Gear tooth right -->
+  <rect x="710" y="130" width="8" height="8" fill="#E8A020" opacity="0.6" transform="rotate(45 714 134)"/>
+  <rect x="730" y="150" width="8" height="8" fill="#E8A020" opacity="0.4" transform="rotate(45 734 154)"/>
+  <rect x="705" y="160" width="6" height="6" fill="#E8A020" opacity="0.3" transform="rotate(45 708 163)"/>
+</svg>

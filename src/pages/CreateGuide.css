@@ -1,0 +1,42 @@
+.create-guide-page {
+  padding: 2rem 0;
+}
+
+.create-guide-form {
+  margin-top: 2rem;
+}
+
+.create-guide-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.create-guide-content {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.create-guide-publish-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.create-guide-publish-toggle input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .create-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
