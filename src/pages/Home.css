@@ -34,15 +34,29 @@
   padding: 0 2rem;
 }
 
-.home-hero-logo {
-  max-width: 700px;
-  width: 90%;
+.home-hero-logo-text {
   margin-bottom: 2rem;
   animation: fadeInUp 1s ease-out;
-  /* Match logo background to page background */
-  background: var(--bg-primary);
-  padding: 1rem;
-  border-radius: 8px;
+}
+
+.home-hero-logo-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 10vw, 7.5rem);
+  letter-spacing: 6px;
+  color: var(--text-primary);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.home-hero-logo-sub {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(0.75rem, 2vw, 1.1rem);
+  letter-spacing: 0.5em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 0.75rem;
 }
 
 .home-hero-tagline {

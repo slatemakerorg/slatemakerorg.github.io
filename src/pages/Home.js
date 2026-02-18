@@ -57,11 +57,10 @@ export default function Home() {
         <div className="home-hero-grid"></div>
         <div className="home-hero-glow"></div>
         <div className="home-hero-content">
-          <img
-            src="/SlateMakerLogo.png"
-            alt="SlateMaker — Build · Modify · Share"
-            className="home-hero-logo"
-          />
+          <div className="home-hero-logo-text">
+            <div className="home-hero-logo-name">SLATEMAKER</div>
+            <div className="home-hero-logo-sub">BUILD · MODIFY · SHARE</div>
+          </div>
           <p className="home-hero-tagline">
             The open source maker community for the Slate EV pickup truck.
             Design, fabricate, and share accessories, mods, and upgrades — together.
