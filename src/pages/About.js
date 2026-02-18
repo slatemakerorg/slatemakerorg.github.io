@@ -15,7 +15,7 @@ export default function About() {
               SlateMaker started with a simple idea: the Slate EV pickup is built for people who
               love to <strong>build, modify, and make things their own</strong>. With its
               service-it-yourself philosophy and modular design, the Slate provides the perfect 
-              foundation for a dedicated maker community to rally around. .p
+              foundation for a dedicated maker community to rally around.
             </p>
             <p>
               Based in Central Indiana — near Slate's factory in Warsaw — SlateMaker is the
