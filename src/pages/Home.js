@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import DesignCard from '../components/DesignCard';
-import { ArrowRight, Wrench, Cpu, Zap, BookOpen, FolderOpen, GraduationCap } from 'lucide-react';
+import { ArrowRight, Wrench, Cpu, Zap, BookOpen, FolderOpen, GraduationCap, ChevronDown } from 'lucide-react';
 import './Home.css';
 
 export default function Home() {
@@ -75,10 +75,13 @@ export default function Home() {
             </Link>
           </div>
         </div>
+        <a href="#features" className="home-scroll-indicator" aria-label="Scroll down">
+          <ChevronDown size={32} />
+        </a>
       </section>
 
       {/* Features */}
-      <section className="home-features">
+      <section id="features" className="home-features">
         <div className="container">
           <div className="section-label">What We Do</div>
           <h2 className="section-title">BUILD · MODIFY · SHARE</h2>
