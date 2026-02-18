@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -23,6 +23,8 @@ const CATEGORIES = [
 export default function CreateGuide() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditing = Boolean(id);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -30,11 +32,36 @@ export default function CreateGuide() {
   const [category, setCategory] = useState('');
   const [tags, setTags] = useState('');
   const [attachments, setAttachments] = useState([]);
+  const [existingFiles, setExistingFiles] = useState([]);
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [existingThumbnailUrl, setExistingThumbnailUrl] = useState(null);
   const [published, setPublished] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!isEditing) return;
+    async function loadGuide() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('guides')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error || !data) { setError('Guide not found.'); setLoading(false); return; }
+      setTitle(data.title || '');
+      setDescription(data.description || '');
+      setContent(data.content || '');
+      setCategory(data.category || '');
+      setTags((data.tags || []).join(', '));
+      setPublished(data.published ?? true);
+      if (data.thumbnail_url) { setExistingThumbnailUrl(data.thumbnail_url); setThumbnailPreview(data.thumbnail_url); }
+      if (data.files) setExistingFiles(data.files);
+      setLoading(false);
+    }
+    loadGuide();
+  }, [id, isEditing]);
 
   const onDropAttachments = useCallback((acceptedFiles) => {
     setAttachments(prev => [...prev, ...acceptedFiles]);
@@ -115,26 +142,44 @@ export default function CreateGuide() {
       }
 
       const tagList = tags.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+      const allFiles = [...existingFiles, ...uploadedFiles];
 
-      const { data: guide, error: insertError } = await supabase
-        .from('guides')
-        .insert([{
-          user_id: user.id,
-          title: title.trim(),
-          description: description.trim(),
-          content: content.trim(),
-          category,
-          tags: tagList,
-          thumbnail_url: thumbnailUrl,
-          files: uploadedFiles.length > 0 ? uploadedFiles : null,
-          published,
-        }])
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-
-      navigate(`/guides/${guide.id}`);
+      if (isEditing) {
+        const { error: updateError } = await supabase
+          .from('guides')
+          .update({
+            title: title.trim(),
+            description: description.trim(),
+            content: content.trim(),
+            category,
+            tags: tagList,
+            thumbnail_url: thumbnailUrl || existingThumbnailUrl,
+            files: allFiles.length > 0 ? allFiles : null,
+            published,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', id);
+        if (updateError) throw updateError;
+        navigate(`/guides/${id}`);
+      } else {
+        const { data: guide, error: insertError } = await supabase
+          .from('guides')
+          .insert([{
+            user_id: user.id,
+            title: title.trim(),
+            description: description.trim(),
+            content: content.trim(),
+            category,
+            tags: tagList,
+            thumbnail_url: thumbnailUrl,
+            files: uploadedFiles.length > 0 ? uploadedFiles : null,
+            published,
+          }])
+          .select()
+          .single();
+        if (insertError) throw insertError;
+        navigate(`/guides/${guide.id}`);
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
@@ -150,8 +195,8 @@ export default function CreateGuide() {
     <div className="page-content">
       <div className="container">
         <div className="create-guide-page">
-          <div className="section-label">Share Your Knowledge</div>
-          <h1 className="section-title">WRITE A GUIDE</h1>
+          <div className="section-label">{isEditing ? 'Update Your Guide' : 'Share Your Knowledge'}</div>
+          <h1 className="section-title">{isEditing ? 'EDIT GUIDE' : 'WRITE A GUIDE'}</h1>
           <div className="section-divider"></div>
 
           {error && <div className="alert alert-error">{error}</div>}
@@ -291,7 +336,7 @@ export default function CreateGuide() {
             <div className="upload-actions">
               <button type="submit" className="btn btn-primary" disabled={loading}>
                 <BookOpen size={16} />
-                {loading ? 'Publishing...' : (published ? 'Publish Guide' : 'Save Draft')}
+                {loading ? (isEditing ? 'Saving...' : 'Publishing...') : (isEditing ? 'Save Changes' : (published ? 'Publish Guide' : 'Save Draft'))}
               </button>
             </div>
           </form>

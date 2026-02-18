@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Download, Heart, Eye, Calendar, Tag, User, ArrowLeft, FileBox, BookOpen } from 'lucide-react';
+import { Download, Heart, Eye, Calendar, Tag, User, ArrowLeft, FileBox, BookOpen, Pencil } from 'lucide-react';
 import './GuideDetail.css';
 
 export default function GuideDetail() {
@@ -119,9 +119,16 @@ export default function GuideDetail() {
       <div className="container">
         <div className="guide-detail">
 
-          <Link to="/guides" className="guide-detail-back">
-            <ArrowLeft size={16} /> Back to Guides
-          </Link>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Link to="/guides" className="guide-detail-back">
+              <ArrowLeft size={16} /> Back to Guides
+            </Link>
+            {user && user.id === guide.user_id && (
+              <Link to={`/guides/${id}/edit`} className="btn btn-outline btn-small">
+                <Pencil size={14} /> Edit Guide
+              </Link>
+            )}
+          </div>
 
           <div className="guide-detail-grid">
             {/* Left — image + files */}

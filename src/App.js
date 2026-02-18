@@ -37,6 +37,7 @@ function App() {
             <Route path="/guides" element={<Guides />} />
             <Route path="/guides/:id" element={<GuideDetail />} />
             <Route path="/create-guide" element={<CreateGuide />} />
+            <Route path="/guides/:id/edit" element={<CreateGuide />} />
           </Routes>
           <Footer />
         </div>
