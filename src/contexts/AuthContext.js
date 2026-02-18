@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
 
     console.log('[Auth] AuthContext useEffect running');
 
-    // Get initial session
+    // Get initial session — fetch profile here so it's ready before first render
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('[Auth] getSession result:', session ? `User: ${session.user.id}` : 'No session');
       if (!mounted) return;
@@ -34,10 +34,11 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
-    // Listen for auth changes
+    // Listen for auth changes — skip INITIAL_SESSION (handled by getSession above)
     const { data } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('[Auth] Auth state change:', event, session ? `User: ${session.user.id}` : 'No session');
+        if (event === 'INITIAL_SESSION') return;
         if (!mounted) return;
         try {
           setUser(session?.user ?? null);

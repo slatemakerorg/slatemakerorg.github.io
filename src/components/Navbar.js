@@ -5,7 +5,7 @@ import { Menu, X, Upload, LogOut, User } from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function Navbar() {
           <li><Link to="/community" onClick={() => setMenuOpen(false)}>Community</Link></li>
           <li><Link to="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
           
-          {user ? (
+          {!loading && (user ? (
             <>
               <li>
                 <Link to="/upload" className="navbar-upload-btn" onClick={() => setMenuOpen(false)}>
@@ -63,7 +63,7 @@ export default function Navbar() {
                 </Link>
               </li>
             </>
-          )}
+          ))}
         </ul>
 
         <button 
